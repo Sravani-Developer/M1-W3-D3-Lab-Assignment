@@ -5,57 +5,124 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Gallery</title>
   <style>
+    :root{
+      --bg:#0b1020; --ink:#e9edff; --muted:#a9b3d6;
+      --card:#0f1633; --ring:#87aafc; --glow:0 18px 60px rgba(0,0,0,.45);
+    }
+
     *{box-sizing:border-box}
     body{
-      margin:0;
+      margin:0; 
+      color:var(--ink);
       font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
-      background:#0f1324; 
-      color:#e9edff;
+      background:
+        radial-gradient(1200px 800px at 15% -10%, #1b2d66 0%, transparent 60%),
+        radial-gradient(1200px 800px at 110% 0%, #15224f 0%, transparent 55%),
+        var(--bg);
+    }
+
+    h1{
+      margin:28px auto 8px;
+      max-width:1200px; 
+      padding:0 18px;
+      letter-spacing:.3px;
+      text-align:center;
     }
 
     .wrap{max-width:1200px; 
-      margin:28px auto 70px; 
+      margin:0 auto 70px; 
       padding:0 18px}
 
     .gallery{
       list-style:none; 
-      margin:0; 
+      margin:16px 0 0; 
       padding:0;
       display:grid; 
-      gap:16px;
+      gap:20px;
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     }
 
   
     .gallery li{
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:14px;
+      position:relative; 
+      border-radius:18px; 
       overflow:hidden;
-      background:#0f1633;
+      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,0));
+      border:1px solid rgba(255,255,255,.08);
+      box-shadow:var(--glow);
+      transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+      outline:none;
+    }
+    .gallery li:hover{
+      transform: translateY(-6px);
+      border-color: rgba(135,170,252,.4);
+      box-shadow: 0 26px 80px rgba(0,0,0,.6);
+      cursor:pointer;
+    }
+    .gallery li:focus{ 
+      box-shadow:0 0 0 2px var(--ring) inset, var(--glow) 
     }
 
-   
+    
     .media{ width:100%; 
       height:220px; 
       overflow:hidden; 
       background:#0a0f24; }
-    .media img{ width:100%; 
+    .media img{
+      width:100%; 
       height:100%; 
       object-fit:cover; 
-      display:block; }
+      display:block;
+      transform:scale(1); 
+      transition: transform .35s ease;
+    }
+    .gallery li:hover .media img{ 
+      transform: scale(1.06); 
+    }
 
    
     .caption{
       text-align:center; 
-      font-weight:700;
-      padding:12px 14px 16px;
+      font-weight:700; 
+      letter-spacing:.2px;
+      padding:12px 14px 16px; 
+      color:var(--ink);
       border-top:1px solid rgba(255,255,255,.08);
+      background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0));
+    }
+
+    
+    .description{
+      position:absolute; 
+      inset:10px; 
+      border-radius:14px;
+      display:flex; 
+      align-items:center; 
+      justify-content:center;
+      text-align:center;
+      padding:14px; 
+      line-height:1.35; 
+      color:#fff; 
+      font-size:14px;
+      background:
+        radial-gradient(600px 260px at 50% 50%, rgba(135,170,252,.20) 0%, transparent 60%),
+        linear-gradient(180deg, rgba(0,0,0,.45), rgba(0,0,0,.55));
+      opacity:0; 
+      visibility:hidden; 
+      transform:translateY(10px);
+      transition: opacity .28s ease, transform .28s ease, visibility .28s step-end;
+      outline: 1px solid rgba(255,255,255,.08);
+      pointer-events:none;
+    }
+    .gallery li:hover .description,
+    .gallery li:focus-within .description{
+      opacity:1; visibility:visible; transform:translateY(0);
     }
   </style>
 </head>
 <body>
+  <h1>Gallery</h1>
   <div class="wrap">
-    <h1>Gallery</h1>
     <ul id="gallery" class="gallery" aria-label="Photo gallery"></ul>
   </div>
 
@@ -64,6 +131,8 @@
     const closeListTag = `</li>`;
     const openCaptionTag = `<div class="caption">`;
     const closeCaptionTag = `</div>`;
+    const openDescTag = `<div class="description">`;
+    const closeDescTag = `</div>`;
 
     const images = [
       "images/img1.jpg","images/img2.jpg","images/img3.jpg","images/img4.jpg","images/img5.jpg",
@@ -71,8 +140,8 @@
     ];
 
     const captionTexts = [
-      "Golden Beach Sunset","City Lights Skyline","Latte Heart Art","Eiffel Sunrise Glow","Majestic Lion Rest",
-      "Neon Light Trails","Cozy Coffee Corner","Cherry Blossoms Temple","Butterfly in Bloom","Taco Street Vibes"
+      "Coastal Cliffs","Forest Trail","City Sunrise","Quiet Lake","Desert Dunes",
+      "Snowy Peaks","Country Road","Autumn Park","Seaside Town","Starry Night"
     ];
 
     const descTexts = [
@@ -94,7 +163,8 @@
       const n = i + 1;
       const img = `<div class="media"><img src="${images[i]}" alt="${captionTexts[i]}"></div>`;
       const caption = `${openCaptionTag}${captionTexts[i]}${closeCaptionTag}`;
-      html += openListTag(n) + img + caption + `<!-- desc in next commit -->` + `</li>`;
+      const desc = `${openDescTag}${descTexts[i]}${closeDescTag}`;
+      html += openListTag(n) + img + caption + desc + closeListTag;
     }
     galleryEl.innerHTML = html;
   </script>
