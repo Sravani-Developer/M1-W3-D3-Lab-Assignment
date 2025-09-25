@@ -4,7 +4,7 @@ const openCaptionTag=`<div class="caption">`;
 const closeCaptionTag=`</div>`;
 const openDescTag=`<div class="description" role="button" tabindex="0" aria-label="Show info">`;
 const closeDescTag=`</div>`;
-const closeText="Close";
+const closeText="Click This To Close";
 
 const images=["images/img1.jpg","images/img2.jpg","images/img3.jpg","images/img4.jpg","images/img5.jpg","images/img6.jpg","images/img7.jpg","images/img8.jpg","images/img9.jpg","images/img10.jpg"];
 const captionTexts=["Golden Beach Sunset","City Lights Skyline","Latte Heart Art","Eiffel Sunrise Glow","Majestic Lion Rest","Neon Light Trails","Cozy Coffee Corner","Cherry Blossoms Temple","Butterfly in Bloom","Taco Street Vibes"];
@@ -37,17 +37,31 @@ const infoBox=document.getElementById("infoBox");
 const infoTitle=document.getElementById("infoTitle");
 const infoText=document.getElementById("infoText");
 const closeInfo=document.getElementById("closeInfo");
-if(closeInfo){closeInfo.textContent=closeText}
+if(closeInfo){
+  closeInfo.textContent=closeText;
+  closeInfo.setAttribute("role","button");
+  closeInfo.setAttribute("aria-label",closeText);
+}
 
 function openInfo(title,text){
   infoTitle.textContent=title;
   infoText.textContent=text;
   infoBox.classList.add("show");
 }
-function hideInfo(){infoBox.classList.remove("show")}
+function hideInfo(){
+  infoBox.classList.remove("show");
+}
 
 if(closeInfo){closeInfo.addEventListener("click",e=>{e.preventDefault();hideInfo()})}
+if(infoBox){infoBox.addEventListener("click",e=>{if(e.target===infoBox)hideInfo()})}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")hideInfo()})
 
 document.querySelectorAll(".description").forEach((el,i)=>{
   el.addEventListener("click",()=>openInfo(captionTexts[i],infoTexts[i]));
+  el.addEventListener("keydown",e=>{
+    if(e.key==="Enter"||e.key===" "){
+      e.preventDefault();
+      openInfo(captionTexts[i],infoTexts[i]);
+    }
+  });
 });
